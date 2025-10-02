@@ -5,21 +5,28 @@
 	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"dev": "nodemon --watch './**/*.ts' --exec ts-node index.ts",
-		"prepare": "husky"
+		"dev": "tsx watch index.ts",
+		"start": "node dist/index.js",
+		"build": "tsc",
+		"prepare": "husky",
+		"prisma:generate": "prisma generate",
+		"db:push": "prisma db push"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@prisma/client": "^6.16.3",
 		"@types/express": "^5.0.3",
 		"@types/node": "^24.6.2",
+		"bcryptjs": "^3.0.2",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.1.0",
 		"jsonwebtoken": "^9.0.2",
-		"morgan": "^1.10.1"
+		"morgan": "^1.10.1",
+		"zod": "^4.1.11"
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
@@ -30,11 +37,13 @@
 		"@biomejs/biome": "2.2.5",
 		"@types/cookie-parser": "^1.4.9",
 		"@types/cors": "^2.8.19",
+		"@types/jsonwebtoken": "^9.0.10",
 		"@types/morgan": "^1.9.10",
 		"husky": "^9.1.7",
 		"nodemon": "^3.1.10",
 		"prisma": "^6.16.3",
 		"ts-node": "^10.9.2",
+		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"
 	}
 }

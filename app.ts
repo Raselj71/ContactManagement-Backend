@@ -1,31 +1,20 @@
-import express from "express";
-import "dotenv/config";
-import cookieParser from "cookie-parser";
 import cors from "cors";
-
-import type { NextFunction, Request, Response } from "express";
-import morgan from "morgan";
+import express from "express";
+import { ok } from "./lib/common";
+import { errorHandler } from "./middleware/error";
+import { authRouter } from "./route/auth.route";
+import { contactsRouter } from "./route/contact.route";
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(morgan("dev"));
 
-app.use((_req: Request, res: Response) => {
-	res.status(404).json({
-		success: false,
-		message: "Route not found",
-	});
-});
+app.get("/health", (_req, res) => res.json(ok({ ok: true }, "Healthy")));
 
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-	console.error("Error:", err);
-	res.status(err.statusCode || 500).json({
-		success: false,
-		message: err.message || "Internal Server Error",
-	});
-});
+app.use("/auth", authRouter);
+app.use("/contacts", contactsRouter);
+
+// must be last
+app.use(errorHandler);
 
 export default app;

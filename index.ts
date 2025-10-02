@@ -1,7 +1,7 @@
-import app from "./app.ts"; // 👈 in ESM you must use .js extension after compile
+import app from "./app";
 
-const port = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT || 4000);
 
-app.listen(port, () => {
-	console.log(`✅ Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+	console.log(`API listening on http://localhost:${PORT}`);
 });
