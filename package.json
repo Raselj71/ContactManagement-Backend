@@ -1,0 +1,39 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon --watch './**/*.ts' --exec ts-node index.ts",
+		"prepare": "husky"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.6.2",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"dotenv": "^17.2.3",
+		"express": "^5.1.0",
+		"morgan": "^1.10.1"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+			"biome check --write --no-errors-on-unmatched"
+		]
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"@types/cookie-parser": "^1.4.9",
+		"@types/cors": "^2.8.19",
+		"@types/morgan": "^1.9.10",
+		"husky": "^9.1.7",
+		"nodemon": "^3.1.10",
+		"prisma": "^6.16.3",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3"
+	}
+}

@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-commit checks..."
+echo ""
+
+# Run lint-staged to format and lint staged files
+echo "📝 Formatting and linting staged files with Biome..."
+npx lint-staged
+
+# Check if lint-staged was successful
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "✅ All checks passed! Proceeding with commit..."
+  echo ""
+else
+  echo ""
+  echo "❌ Pre-commit checks failed! Please fix the errors above."
+  echo ""
+  exit 1
+fi
