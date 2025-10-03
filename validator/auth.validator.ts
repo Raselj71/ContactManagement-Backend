@@ -2,8 +2,7 @@ import { z } from "zod";
 import { isValidBDMobile } from "../lib/utils";
 
 export const bdMobile = z.string().refine(isValidBDMobile, {
-	message:
-		"Phone must be a valid Bangladesh mobile number (01XXXXXXXXX or +8801XXXXXXXXX)",
+	message: "Phone must be a valid Bangladesh mobile number",
 });
 
 export const strongPassword = z.string().min(8).max(72);
