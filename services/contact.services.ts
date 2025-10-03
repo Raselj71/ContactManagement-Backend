@@ -101,7 +101,6 @@ export async function searchContacts(
 	q: string,
 	mode: "alias" | "phone" | "auto",
 ) {
-	// phone-first path
 	if (mode === "phone" || mode === "auto") {
 		const norm = normalizeBDMobile(q);
 		if (norm) {
@@ -126,7 +125,6 @@ export async function searchContacts(
 		}
 	}
 
-	// alias search
 	const aliasMatches = await prisma.userContact.findMany({
 		where: { userId, alias: { contains: q, mode: "insensitive" } },
 		include: { contact: true },

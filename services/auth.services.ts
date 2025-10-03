@@ -27,7 +27,7 @@ export async function registerUser(data: {
 		data: { email: data.email, passwordHash },
 	});
 
-	await prisma.profile.create({
+	const userProfile = await prisma.profile.create({
 		data: {
 			userId: user.id,
 			firstName: data.profile.firstName,
@@ -62,8 +62,7 @@ export async function registerUser(data: {
 		});
 	}
 
-	const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
-	return { token };
+	return { userProfile };
 }
 
 export async function loginUser(email: string, password: string) {
