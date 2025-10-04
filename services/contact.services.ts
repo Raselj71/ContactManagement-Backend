@@ -5,15 +5,18 @@ export async function listContacts(
 	userId: string,
 	page: number,
 	pageSize: number,
+	sortBy: "createdAt",
+	sortOrder: "asc" | "desc",
 ) {
 	const skip = (page - 1) * pageSize;
+
 	const [items, total] = await Promise.all([
 		prisma.userContact.findMany({
 			where: { userId },
 			include: { contact: true },
 			skip,
 			take: pageSize,
-			orderBy: { createdAt: "desc" },
+			orderBy: { [sortBy]: sortOrder },
 		}),
 		prisma.userContact.count({ where: { userId } }),
 	]);
@@ -88,11 +91,13 @@ export async function updateContact(
 	const existing = await prisma.userContact.findUnique({
 		where: { id: userContactId },
 	});
+
 	if (!existing || existing.userId !== userId) {
 		const err: any = new Error("Not found");
 		err.status = 404;
 		throw err;
 	}
+
 	return prisma.userContact.update({ where: { id: userContactId }, data });
 }
 
@@ -129,6 +134,7 @@ export async function searchContacts(
 		where: { userId, alias: { contains: q, mode: "insensitive" } },
 		include: { contact: true },
 		take: 50,
+		orderBy: { createdAt: "desc" },
 	});
 
 	return aliasMatches.map((uc) => ({
@@ -138,4 +144,47 @@ export async function searchContacts(
 		labels: uc.labels,
 		notes: uc.notes,
 	}));
+}
+
+export async function getUserContactById(
+	userId: string,
+	userContactId: string,
+) {
+	const uc = await prisma.userContact.findUnique({
+		where: { id: userContactId },
+		include: { contact: true },
+	});
+
+	if (!uc || uc.userId !== userId) {
+		const err: any = new Error("Not found");
+		err.status = 404;
+		throw err;
+	}
+
+	return {
+		id: uc.id,
+		alias: uc.alias,
+		labels: uc.labels,
+		notes: uc.notes,
+		phoneNumber: uc.contact?.phoneNumber,
+		normalizedPhone: uc.contact?.normalizedPhone,
+		createdAt: uc.createdAt,
+	};
+}
+
+export async function deleteUserContact(userId: string, userContactId: string) {
+	const existing = await prisma.userContact.findUnique({
+		where: { id: userContactId },
+		select: { id: true, userId: true },
+	});
+
+	if (!existing || existing.userId !== userId) {
+		const err: any = new Error("Not found");
+		err.status = 404;
+		throw err;
+	}
+
+	await prisma.userContact.delete({ where: { id: userContactId } });
+
+	return { id: userContactId };
 }

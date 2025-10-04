@@ -78,6 +78,15 @@ export async function loginUser(email: string, password: string) {
 		err.status = 401;
 		throw err;
 	}
+	const profile = await prisma.profile.findUnique({
+		where: {
+			userId: user.id,
+		},
+		select: {
+			firstName: true,
+			lastName: true,
+		},
+	});
 	const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
-	return { token };
+	return { token, profile };
 }

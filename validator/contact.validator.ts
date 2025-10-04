@@ -1,9 +1,18 @@
 import { z } from "zod";
 import { bdMobile } from "./auth.validator";
 
-export const listQuerySchema = z.object({
+export const combinedQuerySchema = z.object({
 	page: z.coerce.number().int().min(1).default(1),
 	pageSize: z.coerce.number().int().min(1).max(100).default(20),
+	q: z
+		.string()
+		.transform((v) => (typeof v === "string" ? v.trim() : v))
+		.optional()
+		.transform((v) => (v === "" ? undefined : v)),
+	mode: z.enum(["alias", "phone", "auto"]).default("auto").optional(),
+
+	sortBy: z.enum(["createdAt"]).default("createdAt"),
+	sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export const addContactSchema = z.object({
@@ -23,7 +32,6 @@ export const updateContactSchema = z
 		message: "No updates provided",
 	});
 
-export const searchQuerySchema = z.object({
-	q: z.string().trim().min(1),
-	mode: z.enum(["alias", "phone", "auto"]).default("auto"),
+export const contactIdParamSchema = z.object({
+	userContactId: z.string().min(1, "userContactId is required"),
 });

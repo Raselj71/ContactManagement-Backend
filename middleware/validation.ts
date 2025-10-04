@@ -1,6 +1,6 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import type z from "zod";
-import type { ZodTypeAny } from "zod";
+import type { ZodSchema, ZodTypeAny } from "zod";
 import { fail } from "../lib/common";
 
 function issuesToProblems(issues: z.ZodIssue[]) {
@@ -40,6 +40,23 @@ export function validateQuery<T extends z.ZodTypeAny>(schema: T) {
 		}
 
 		(res.locals as any).query = result.data;
+		next();
+	};
+}
+
+export function validateParams<T>(schema: ZodSchema<T>): RequestHandler {
+	return (req, res, next) => {
+		const parsed = schema.safeParse(req.params);
+		if (!parsed.success) {
+			const errors = parsed.error.issues.map((i) => ({
+				path: i.path.join("."),
+				message: i.message,
+				code: i.code,
+			}));
+			return res.status(422).json(fail({ errors }, "Validation failed", 422));
+		}
+
+		req.params = parsed.data as any;
 		next();
 	};
 }
